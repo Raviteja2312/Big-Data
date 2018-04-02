@@ -1,0 +1,58 @@
+*****************Creating ORC file in hive*****************
+1.
+***************** First create a normal table(Staging) in Hive and load the csv file onto the table***************
+
+create table staging_csv(vendor_id string,
+pickup_datetime string,
+dropoff_datetime string,
+passenger_count tinyint,
+trip_distance decimal,
+pickup_longitude double,
+pickup_latitude double,
+store_and_fwd_flag char(1),
+dropoff_longitude double,
+dropoff_latitude double,
+payment_type char(3),
+fare_amount double,
+mta_tax decimal,
+tip_amount decimal,
+tolls_amount decimal,
+total_amount decimal,
+imp_surcharge decimal,
+extra decimal,
+rate_code decimal)
+COMMENT 'Data about taxis in NYC from a public database'
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE
+    location 'file:///home/raviteja/taxi.csv';;
+2.
+****************Create an external table in hive with same schema as above and stored as ORC*********
+ 
+ create external table if not exists orc_taxi(vendor_id string,
+ pickup_datetime string,
+ dropoff_datetime string,
+ passenger_count tinyint,
+ trip_distance decimal,
+ pickup_longitude double,
+ pickup_latitude double,
+ store_and_fwd_flag char(1),
+ dropoff_longitude double,
+ dropoff_latitude double,
+ payment_type char(3),
+ fare_amount double,
+ mta_tax decimal,
+ tip_amount decimal,
+ tolls_amount decimal,
+ total_amount decimal,
+ imp_surcharge decimal,
+ extra decimal,
+ rate_code decimal)
+ COMMENT 'Data about taxis in NYC from a public database'
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS orc;
+3.
+************ Load the data from staging table to external orc table*************
+ 
+ INSERT OVERWRITE TABLE orc_taxi SELECT * FROM staging_csv;  
