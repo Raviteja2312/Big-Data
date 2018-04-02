@@ -1,0 +1,28 @@
+*************************Kafka************************** 
+
+export kafka_bin="/usr/hdp/current/kafka-broker/bin/"
+export kafka_config="/usr/hdp/current/kafka-broker/config"
+
+************* Kafka Server Start************************
+sh $kafka_bin/kafka-server-start.sh $kafka_config/server.properties &
+
+*************Kafka Topic Creation*********************
+
+sh $kafka_bin/kafka-topics.sh --create --zookeeper nn01.itversity.com:2181 --replication-factor 1 --partitions
+2 --topic testtopic
+
+**************Kafka Producer console start csv file as input*************
+
+sh $kafka_bin/kafka-console-producer.sh --broker-list nn01.itversity.com:6667 --topic testtopic < moviedata.csv
+
+*************Kafka Consumer Console Start***************
+
+sh $kafka_bin/kafka-console-consumer.sh --zookeeper nn01.itversity.com:2181 --topic testtopic --from-beginning
+
+**Kafka consumer groups creation with --consumer.config parameter and test.properties as argument which contains group.id=your_group_name**
+
+sh $kafka_bin/kafka-console-consumer.sh --zookeeper nn01.itversity.com:2181 --topic testtopic --consumer.config test.properties
+
+*********** Describe consumer groups*********************
+
+$kafka_bin/kafka-consumer-groups.sh --describe --group 1 --zookeeper nn01.itversity.com:2181
