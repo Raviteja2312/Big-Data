@@ -1,0 +1,14 @@
+********************Hbase table creation************************************
+
+create ‘worldbank’,’demographic_data’ 
+
+*******************populate hbase table***********************************
+
+put 'worldbank','ravi' ,'demographic_data:city', 'Aurora'
+
+******************* Hive table(all columns mapped as Map<string,string>) creation mapped to hbase table************
+
+create external table hivehbase(name string, demographic Map<string,string>)
+stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+with serdeproperties("hbase.columns.mapping"= ":key,demographic_data:")
+tblproperties("hbase.table.name"="worldbank");
