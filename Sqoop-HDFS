@@ -1,0 +1,130 @@
+#Sqoop 
+#Compress
+#Target-Dir
+#SqoopJob
+#Query
+#Split-by
+#num-mappers
+
+sqoop import \
+--connect jdbc:mysql://nn01.itversity.com:3306/retail_import \
+--username retail_dba -P \
+--table sqoopexample \
+--target-dir /user/raviteja/sqoopImportJob \
+--compress
+
+sqoop-import-all-tables \ 
+--connect jdbc:mysql://nn01.itversity.com:3306/retail_import \
+--username retail_dba -P \
+--target-dir /user/raviteja/sqoopImportJob \
+--compress
+
+
+******************** Sqoop Job Creation and Execution**********************
+sqoop job \
+--create ravizjob \
+-- import \
+--connect jdbc:mysql://nn01.itversity.com:3306/retail_import \
+--username retail_dba -P \
+--table sqoopexample \
+--target-dir /user/raviteja/sqoopImportJob
+
+sqoop job \
+--list
+
+Available jobs:
+  ravizjob
+
+sqoop job \
+--show ravizjob
+
+Job: ravizjob
+Tool: import
+Options:
+----------------------------
+verbose = false
+hcatalog.drop.and.create.table = false
+db.connect.string = jdbc:mysql://nn01.itversity.com:3306/retail_import
+codegen.output.delimiters.escape = 0
+codegen.output.delimiters.enclose.required = false
+codegen.input.delimiters.field = 0
+split.limit = null
+hbase.create.table = false
+mainframe.input.dataset.type = p
+db.require.password = true
+hdfs.append.dir = false
+hive.compute.stats.table = false
+db.table = sqoopexample
+codegen.input.delimiters.escape = 0
+accumulo.create.table = false
+import.fetch.size = null
+codegen.input.delimiters.enclose.required = false
+db.username = retail_dba
+reset.onemapper = false
+codegen.output.delimiters.record = 10
+import.max.inline.lob.size = 16777216
+hbase.bulk.load.enabled = false
+hcatalog.create.table = false
+db.clear.staging.table = false
+codegen.input.delimiters.record = 0
+enable.compression = false
+hive.overwrite.table = false
+hive.import = false
+codegen.input.delimiters.enclose = 0
+accumulo.batch.size = 10240000
+hive.drop.delims = false
+customtool.options.jsonmap = {}
+codegen.output.delimiters.enclose = 0
+hdfs.delete-target.dir = false
+codegen.output.dir = .
+codegen.auto.compile.dir = true
+relaxed.isolation = false
+mapreduce.num.mappers = 4
+accumulo.max.latency = 5000
+import.direct.split.size = 0
+codegen.output.delimiters.field = 44
+export.new.update = UpdateOnly
+incremental.mode = None
+hdfs.file.format = TextFile
+codegen.compile.dir = /tmp/sqoop-raviteja/compile/9733744dd5cc06ebe3b86f5cec9d67ba
+direct.import = false
+temporary.dirRoot = _sqoop
+hdfs.target.dir = /user/raviteja/sqoopImportJob
+hive.fail.table.exists = false
+db.batch = false
+
+sqoop job \
+--delete ravizjob
+
+sqoop job \
+--exec ravizjob
+
+*********************** Sqoop Import using --query --split-by column --target-dir //path//*****************
+sqoop import \
+--connect jdbc:mysql://nn01.itversity.com:3306/retail_import \
+--username retail_dba -P \
+--query 'select name,location,id from sqoopexample where $CONDITIONS AND age=24 || age=26' \
+--split-by id \
+--num-mappers 6 \
+--target-dir /user/raviteja/sqoopImportJob 
+
+ **************************OR*********************************************
+
+sqoop import \
+--connect jdbc:mysql://nn01.itversity.com:3306/retail_import \
+--username retail_dba -P \
+--table sqoopexample \
+--where 'age=24 || age=26' \
+--split-by id \
+--num-mappers 6 \
+--target-dir /user/raviteja/sqoopImportJob 
+ 
+sqoop import \
+--connect jdbc:mysql://nn01.itversity.com:3306/retail_import \
+--username retail_dba -P \
+--table sqoopexample \
+--columns "name,location,id" \
+--where 'age=24 || age=26' \
+--split-by id \
+--num-mappers 6 \
+--target-dir /user/raviteja/sqoopImportJob 
